@@ -14,21 +14,6 @@ const Calories = function () {
     return Math.max(...elves_calories);
   }
 
-  this.threeMax = (elves_calories) => {
-    let first, second, third = Number.MIN_VALUE;
-    first = this.getMax(elves_calories);
-
-    let firstMaxIdx = elves_calories.indexOf(first);
-    elves_calories.splice(firstMaxIdx, 1);
-    second = this.getMax(elves_calories);
-
-    let secondMaxIdx = elves_calories.indexOf(second);
-    elves_calories.splice(secondMaxIdx, 1);
-    third = this.getMax(elves_calories);
-
-    return first + second + third;
-  }
-
   this.threeLargest = (elves_calories) => {
     if (elves_calories.length < 3) {
       return 0;

@@ -41,9 +41,6 @@ describe("Day 1", () => {
 
   it('3 max calories', () => {
     let calories = new Calories();
-    // let res = calories.threeMax(data);
-    // expect(res).toBe(45000);
-
     let res = calories.threeLargest(data);
     expect(res).toBe(45000);
   });  
