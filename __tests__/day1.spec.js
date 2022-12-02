@@ -2,7 +2,7 @@ import { expect } from "@jest/globals";
 import { parseInputData, Calories } from "../day1/day1.functions.js";
 import { split_blocks } from '../utils/utils';
 
-describe("Day 1", () => {
+describe("--- Day 1: Calorie Counting ---", () => {
 
   function get_input() {
     let input = `1000
