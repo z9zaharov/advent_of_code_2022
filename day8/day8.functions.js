@@ -58,11 +58,6 @@ const TreeHouse = function () {
         this.getAroundRightDown(data, data.length - 1 - i, data[0].length - 1 - j);
       }
     }
-    // for(let i = data.length - 2; i >= 0; i --) {
-    //   for(let j = data[0].length - 2; j >= 0; j --) {
-    //     this.getAroundRightDown(data, i, j);
-    //   }
-    // }
   }
 
   this.findMaxHeightsScenic = (data) => {
