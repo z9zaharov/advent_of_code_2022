@@ -2,7 +2,7 @@ import { expect } from "@jest/globals";
 import { parseInputData, FileSystem } from "../day7/day7.functions.js";
 import { split_blocks } from '../utils/utils';
 
-describe.only("--- Day 7: No Space Left On Device ---", () => {
+describe("--- Day 7: No Space Left On Device ---", () => {
 
   function get_input() {
     let input = `$ cd /
