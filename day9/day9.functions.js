@@ -33,97 +33,37 @@ const RopeBridge = function () {
   }
 
   this.Offsets = [
-    [{dy: 1, dx: 1}, {dy: 1, dx: 1}, {dy: 1, dx: 0}, {dy: 1, dx:-1}, {dy: 1, dx:-1}],
-    [{dy: 1, dx: 1}, {dy: 0, dx: 0}, {dy: 0, dx: 0}, {dy: 0, dx: 0}, {dy: 1, dx:-1}],
-    [{dy: 0, dx: 1}, {dy: 0, dx: 0}, {dy: 0, dx: 0}, {dy: 0, dx: 0}, {dy: 0, dx:-1}],
-    [{dy:-1, dx: 1}, {dy: 0, dx: 0}, {dy: 0, dx: 0}, {dy: 0, dx: 0}, {dy:-1, dx:-1}],
-    [{dy:-1, dx: 1}, {dy:-1, dx: 1}, {dy:-1, dx: 0}, {dy:-1, dx:-1}, {dy:-1, dx:-1}],
+    [{dy:-1, dx:-1}, {dy:-1, dx:-1}, {dy:-1, dx: 0}, {dy:-1, dx: 1}, {dy:-1, dx: 1}],
+    [{dy:-1, dx:-1}, {dy: 0, dx: 0}, {dy: 0, dx: 0}, {dy: 0, dx: 0}, {dy:-1, dx: 1}],
+    [{dy: 0, dx:-1}, {dy: 0, dx: 0}, {dy: 0, dx: 0}, {dy: 0, dx: 0}, {dy: 0, dx: 1}],
+    [{dy: 1, dx:-1}, {dy: 0, dx: 0}, {dy: 0, dx: 0}, {dy: 0, dx: 0}, {dy: 1, dx: 1}],
+    [{dy: 1, dx:-1}, {dy: 1, dx:-1}, {dy: 1, dx: 0}, {dy: 1, dx: 1}, {dy: 1, dx: 1}],
   ];
 
-  this.updateTailPos = (head, tail) => {
-    // overlap
-    if (head.x == tail.x && head.y == tail.y) {
-    }
-    // move vertically
-    else if (head.x == tail.x) {
-      // move D
-      if (head.y == tail.y + 2) {
-        tail.y ++;
-      }
-      // move U
-      else if (head.y == tail.y - 2) {
-        tail.y --;
-      }
-    } 
-    // move horizontally
-    else if (head.y == tail.y) {
-      // move R
-      if (head.x == tail.x + 2) {
-        tail.x ++;
-      }
-      // move L
-      else if (head.x == tail.x - 2) {
-        tail.x --;
-      }
-    }
-    // move diagonally
-    else {
-      // move D R
-      if (head.y == tail.y + 2 && head.x == tail.x + 2) {
-        tail.x ++;
-        tail.y ++;
-      }
-      // move U R
-      else if (head.y == tail.y - 2 && head.x == tail.x + 2) {
-        tail.x ++;
-        tail.y --;
-      }
-      // move D L
-      else if (head.y == tail.y + 2 && head.x == tail.x - 2) {
-        tail.y ++;
-        tail.x --;
-      }
-      // move U L
-      else if (head.y == tail.y - 2 && head.x == tail.x + 2) {
-        tail.y --;
-        tail.x --;
-      }
-      // move half diagonally
-      // move D
-      else if (head.y == tail.y + 2) {
-        tail.x = head.x;
-        tail.y ++;
-      }
-      // move U
-      else if (head.y == tail.y - 2) {
-        tail.x = head.x;
-        tail.y --;
-      }
-      // move R
-      else if (head.x == tail.x + 2) {
-        tail.y = head.y;
-        tail.x ++;
-      }
-      // move L
-      else if (head.x == tail.x - 2) {
-        tail.y = head.y;
-        tail.x --;
-      }
-    }
+  this.getOffset = (head, tail) => {
+    const row = head.y - tail.y + 2;
+    const col = head.x - tail.x + 2;
+    
+    return this.Offsets[row][col];
+  }
 
+  this.updateTailPos = (head, tail) => {
+    const offset = this.getOffset(head, tail);
+    tail.y = tail.y + offset.dy;
+    tail.x = tail.x + offset.dx;
     return tail;
   }
 
   this.moveHead = (head, dir) => {
     switch (dir) {
       case this.Directions.U:
-        head.y --;
+        head.y ++;
         break;
       case this.Directions.R:
         head.x ++;
         break;
       case this.Directions.D:
-        head.y ++;
+        head.y --;
         break;
       case this.Directions.L:
         head.x --;
