@@ -2,7 +2,7 @@ import { expect } from "@jest/globals";
 import { parseInputData, TreeHouse } from "../day8/day8.functions.js";
 import { split_blocks } from '../utils/utils';
 
-describe.only("--- Day 8: Treetop Tree House ---", () => {
+describe("--- Day 8: Treetop Tree House ---", () => {
 
   function get_input() {
     let input = `30373
