@@ -2,7 +2,7 @@ import { expect } from "@jest/globals";
 import { parseInputData, RopeBridge } from "../day9/day9.functions.js";
 import { split_blocks } from '../utils/utils';
 
-describe.only("--- Day 9: Rope Bridge ---", () => {
+describe("--- Day 9: Rope Bridge ---", () => {
 
   function get_input() {
     let input = `R 4
