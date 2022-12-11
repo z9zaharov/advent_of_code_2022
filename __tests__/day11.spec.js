@@ -2,7 +2,7 @@ import { expect } from "@jest/globals";
 import { parseInputData, MonkeyBusiness } from "../day11/day11.functions.js";
 import { split_blocks } from '../utils/utils';
 
-describe.only("--- Day 11: Monkey in the Middle ---", () => {
+describe("--- Day 11: Monkey in the Middle ---", () => {
 
   function get_input() {
 let input = `Monkey 0:
