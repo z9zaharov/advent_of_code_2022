@@ -5,10 +5,9 @@
 function parseInputData(data, separator) {
   return data.map(block =>  {
     let lines = block.split(separator);
-
     return {
-      left: lines[0].trim(),
-      right: lines[1].trim()
+      left: JSON.parse(lines[0].trim()),
+      right: JSON.parse(lines[1].trim())
     }
   });
 }
@@ -74,6 +73,7 @@ const DistressSignal = function () {
       if (i >= right.length) {
         return 1;
       }
+
       let res = this.compare(left[i], right[i]);
       if (res != 0) {
         return res;
@@ -85,7 +85,7 @@ const DistressSignal = function () {
 
   this.countRight = (data) => {
     return data.reduce((sum, pair, i) => {
-      return (this.compare(this.parseLine(pair.left), this.parseLine(pair.right)) < 0) ? sum + (i + 1) : sum;
+      return (this.compare(pair.left, pair.right) < 0) ? sum + (i + 1) : sum;
     }, 0);
   }
 
@@ -97,19 +97,19 @@ const DistressSignal = function () {
     const arr6 = [[6]];
 
     data.forEach(pair => {
-      if (this.compare(this.parseLine(pair.left), arr2) < 0) {
+      if (this.compare(pair.left, arr2) < 0) {
         key2 ++;
         key6 ++;
       }
-      else if (this.compare(this.parseLine(pair.left), arr6) < 0) {
+      else if (this.compare(pair.left, arr6) < 0) {
         key6 ++;
       }
 
-      if (this.compare(this.parseLine(pair.right), arr2) < 0) {
+      if (this.compare(pair.right, arr2) < 0) {
         key2 ++;
         key6 ++;
       }
-      else if (this.compare(this.parseLine(pair.right), arr6) < 0) {
+      else if (this.compare(pair.right, arr6) < 0) {
         key6 ++;
       }
     });
