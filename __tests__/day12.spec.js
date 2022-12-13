@@ -2,7 +2,7 @@ import { expect } from "@jest/globals";
 import { parseInputData, Hill } from "../day12/day12.functions.js";
 import { split_blocks } from '../utils/utils';
 
-describe.only("--- Day 12: Hill Climbing Algorithm ---", () => {
+describe("--- Day 12: Hill Climbing Algorithm ---", () => {
 
   function get_input() {
     let input = `Sabqponm
