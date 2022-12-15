@@ -112,6 +112,10 @@ const Regolith = function () {
     });
   }
 
+  this.nextCoord = (field, size, point) => {
+
+  }
+
   this.nextCoord = (field, point) => {
     let pad = this.getBelowPad(field, point);
 
