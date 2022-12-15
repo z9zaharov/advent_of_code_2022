@@ -21,75 +21,92 @@ describe.only("--- Day 14: Regolith Reservoir ---", () => {
     let regolith = new Regolith();
 
     let size = regolith.getSize(data);
-    let field = regolith.initField(size.y, size.x);
-    regolith.fill(data, field);
-    expect(true).toBe(true);
+    expect(size).toMatchObject({y: 10, x: 504});
+  });
+
+  it('is solid', () => {
+    let regolith = new Regolith();
+
+    let res = regolith.isSolid(data, {y: 9, x: 500});
+    expect(res).toBe(regolith.Types.Rock);
+
+    res = regolith.isSolid(data, {y: 9, x: 499});
+    expect(res).toBe(regolith.Types.Rock);
+
+    res = regolith.isSolid(data, {y: 9, x: 501});
+    expect(res).toBe(regolith.Types.Rock);
+
+    res = regolith.isSolid(data, {y: 8, x: 500});
+    expect(res).toBe(regolith.Types.Empty);
   });
 
   it('check next point', () => {
     let regolith = new Regolith();
 
     let size = regolith.getSize(data);
-    let field = regolith.initField(size.y, size.x);
-    regolith.fill(data, field);
+    let stones = new Array(size.y).fill('').map(a => []);
 
-    let point = regolith.nextCoord(field, {y: 8, x: 500});
+    let point = regolith.nextCoord(data, stones, {y: 8, x: 500}, size);
     expect(point).toMatchObject({y: 8, x: 500});
 
-    point = regolith.nextCoord(field, {y: 7, x: 500});
+    point = regolith.nextCoord(data, stones, {y: 7, x: 500}, size);
     expect(point).toMatchObject({y: 8, x: 500});
  
-    field[8][500] = regolith.Types.Stone;
-    point = regolith.nextCoord(field, {y: 7, x: 500});
+    stones[8].push(500);
+    point = regolith.nextCoord(data, stones, {y: 7, x: 500}, size);
     expect(point).toMatchObject({y: 8, x: 499});
 
-    field[8][499] = regolith.Types.Stone;
-    point = regolith.nextCoord(field, {y: 7, x: 500});
+    stones[8].push(499);
+    point = regolith.nextCoord(data, stones, {y: 7, x: 500}, size);
     expect(point).toMatchObject({y: 8, x: 501});
 
-    field[8][501] = regolith.Types.Stone;
-    point = regolith.nextCoord(field, {y: 7, x: 500});
+    stones[8].push(501);
+    point = regolith.nextCoord(data, stones, {y: 7, x: 500}, size);
     expect(point).toMatchObject({y: 7, x: 500});
 
-    point = regolith.nextCoord(field, {y: 8, x: 494});
+    point = regolith.nextCoord(data, stones, {y: 8, x: 494}, size);
     expect(point).toMatchObject({y: 9, x: 493});
 
-    field[8][494] = regolith.Types.Stone;
-    point = regolith.nextCoord(field, {y: 7, x: 494});
+    stones[8].push(494);
+    point = regolith.nextCoord(data, stones, {y: 7, x: 494}, size);
     expect(point).toMatchObject({y: 8, x: 493});
 
-    point = regolith.nextCoord(field, {y: 7, x: 494});
+    point = regolith.nextCoord(data, stones, {y: 7, x: 494}, size);
     expect(point).toMatchObject({y: 8, x: 493});
+
+    // let subField = regolith.cutField(data, stones, 10, 10, {y: 0, x: 494});
+    // console.table(subField);
   });
 
   it('stone fall', () => {
     let regolith = new Regolith();
 
     let size = regolith.getSize(data);
-    let field = regolith.initField(size.y, size.x);
-    regolith.fill(data, field);
+    let stones = new Array(size.y).fill('').map(a => []);
 
-    let res = regolith.stoneFall(field);
-    expect(field[8][500]).toBe(regolith.Types.Stone);
+    let res = regolith.stoneFall(data, stones, size);
+    expect(stones[8]).toEqual(expect.arrayContaining([500]));
     expect(res).toBe(true);
 
-    res = regolith.stoneFall(field);
-    expect(field[8][499]).toBe(regolith.Types.Stone);
+    res = regolith.stoneFall(data, stones, size);
+    expect(stones[8]).toEqual(expect.arrayContaining([500, 499]));
     expect(res).toBe(true);
 
-    res = regolith.stoneFall(field);
-    expect(field[8][501]).toBe(regolith.Types.Stone);
+    res = regolith.stoneFall(data, stones, size);
+    expect(stones[8]).toEqual(expect.arrayContaining([500, 499, 501]));
     expect(res).toBe(true);
 
-    res = regolith.stoneFall(field);
-    expect(field[7][500]).toBe(regolith.Types.Stone);
+    res = regolith.stoneFall(data, stones, size);
+    expect(stones[7]).toEqual(expect.arrayContaining([500]));
+    expect(stones[8]).toEqual(expect.arrayContaining([500, 499, 501]));
     expect(res).toBe(true);
 
-    res = regolith.stoneFall(field);
-    expect(field[8][498]).toBe(regolith.Types.Stone);
+    res = regolith.stoneFall(data, stones, size);
+    expect(stones[7]).toEqual(expect.arrayContaining([500]));
+    expect(stones[8]).toEqual(expect.arrayContaining([500, 499, 501, 498]));
     expect(res).toBe(true);
 
-    // let subField = regolith.cutField(field, 10, 10, {y: 0, x: 494});
+    // let subField = regolith.cutField(data, stones, 10, 10, {y: 0, x: 494});
     // console.table(subField);
   });
 
@@ -98,5 +115,12 @@ describe.only("--- Day 14: Regolith Reservoir ---", () => {
 
     let res = regolith.fallToAbyss(data);
     expect(res).toBe(24);
+  });
+
+  it('fall to fill', () => {
+    let regolith = new Regolith();
+
+    let res = regolith.fillFull(data);
+    expect(res).toBe(93);
   });
 })

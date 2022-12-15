@@ -29,7 +29,7 @@ const Regolith = function () {
     let maxY = 0;
     data.forEach((line => {
       line.forEach(point => {
-        if (point.x > maxX) {
+        if (point.x > maxX) { 
           maxX = point.x;
         }
         if (point.y > maxY) {
@@ -37,87 +37,47 @@ const Regolith = function () {
         }
       })
     }));
-    return { y: maxY + 1, x: maxX + 1 };
-  }
-
-  this.getSizeExtended = (data) => {
-    let size = this.getSize(data);
-
-
-
-    return {y: size.y + 2, x: size.x };
-  }
-
-  this.initField = (maxY, maxX) => {
-    return new Array(maxY).fill(this.Types.Empty).map(a => new Array(maxX).fill(this.Types.Empty));
-  }
-
-  this.fill = (data, field) => {
-    data.forEach((line => {
-      for(let i = 1; i < line.length; i++) {
-        
-        let distanceX = line[i - 1].x - line[i].x;
-        let dirX = (distanceX > 0) ? -1 : 1;
-
-        let distanceY = line[i - 1].y - line[i].y;
-        let dirY = (distanceY > 0) ? -1 : 1;
-
-        let y = line[i - 1].y;
-        for (let x = 0; x <= Math.abs(distanceX); x ++) {
-          field[y][line[i - 1].x + x * dirX] = this.Types.Rock;
-        }
-
-        let x = line[i - 1].x;
-        for (let y = 0; y <= Math.abs(distanceY); y ++) {
-          field[line[i - 1].y + y * dirY][x] = this.Types.Rock;
-        }
-      }
-    }));
-  }
-
-  this.fillExtended = (data, field) => {
-    this.fill(data, field);
-    for(let i = 0; i < field[field.length - 1].length; i ++) {
-      field[field.length - 1][i] = this.Types.Rock;
-    }
-  }
-
-  this.getBelowPad = (field, point) => {
-    if (point.y >= field.length - 1) {
-      return [ this.Types.Out, this.Types.Out, this.Types.Out ];
-    }
-    return [
-       (point.x - 1 >= 0) ? field[point.y + 1][point.x - 1] : this.Types.Out,
-      field[point.y + 1][point.x],
-      (point.x + 1 < field[point.y + 1].length) ? field[point.y + 1][point.x + 1] : this.Types.Out,
-    ];
+    return { y: maxY+ 1, x: maxX + 1 };
   }
 
   this.isSolid = (data, point) => {
-    data.forEach((line => {
-
-      if (line[i - 1].y == line[i].y && (line[i - 1].x <= point.x && line[i].x >= point.x || line[i].x <= point.x && line[i - 1].x >= point.x)
-        || line[i - 1].x == line[i].x && (line[i - 1].y <= point.y && line[i].y >= point.y || line[i].y <= point.y && line[i - 1].y >= point.y)
+    let res = this.Types.Empty;
+    for(let k = 0; k < data.length; k ++) {
+      let line = data[k];
+      for(let i = 1; i < line.length; i ++) {
+        if(line[i - 1].y == line[i].y && line[i - 1].y == point.y && (line[i - 1].x <= point.x && line[i].x >= point.x || line[i].x <= point.x && line[i - 1].x >= point.x)
+          || line[i - 1].x == line[i].x && line[i - 1].x == point.x && (line[i - 1].y <= point.y && line[i].y >= point.y || line[i].y <= point.y && line[i - 1].y >= point.y)
         )
         {
-          return true;
+          return (line[i - 1].type) ? line[i - 1].type : this.Types.Rock;
         }
-    }));
-    return false;
+      }
+    }
+    return res;
   }
 
-  this.getBelowPad2 = (field, point) => {
+  this.isStone = (stones, point) => {
+    return stones[point.y].indexOf(point.x) > -1;
+  }
+
+  this.getBelowPad = (rocks, stones, point, size, isInfinite = false) => {
+    if (point.y + 1 >= size.y) {
+      if (isInfinite) {
+        return [ this.Types.Rock, this.Types.Rock, this.Types.Rock ];
+      }
+      else {
+        return [ this.Types.Out, this.Types.Out, this.Types.Out ];
+      }
+    }
+
     return new Array(3).fill(this.Types.Out).map((p, i) => {
-      return (this.isSolid(field, {y: point.y  + 1, x: point.x + i - 1 })) ? this.Types.Rock : this.Types.Empty;
+      let pointBelow = {y: point.y  + 1, x: point.x + i - 1 }; 
+      return (this.isStone(stones, pointBelow)) ? this.Types.Stone : this.isSolid(rocks, pointBelow);
     });
   }
 
-  this.nextCoord = (field, size, point) => {
-
-  }
-
-  this.nextCoord = (field, point) => {
-    let pad = this.getBelowPad(field, point);
+  this.nextCoord = (rocks, stones, point, size, isInfinite = false) => {
+    let pad = this.getBelowPad(rocks, stones, point, size, isInfinite);;
 
     // bottom
     if (pad[1] == this.Types.Empty) {
@@ -144,39 +104,51 @@ const Regolith = function () {
     } 
   }
 
-  this.stoneFall = (field) => {
+  this.stoneFall = (rocks, stones, size, isInfinite = false) => {
     let point = {y: this.Start.y, x: this.Start.x }
 
-    let nextPoint = this.nextCoord(field, point);
-    while(nextPoint.y != -1 && nextPoint != point) {
+    let nextPoint = this.nextCoord(rocks, stones, point, size, isInfinite);
+    while(nextPoint.y != -1 && (nextPoint.y != point.y || nextPoint.x != point.x)) {
       point = nextPoint;
-      nextPoint = this.nextCoord(field, point);
+      nextPoint = this.nextCoord(rocks, stones, point, size, isInfinite);
     }
     if (nextPoint.y != -1) {
-      field[nextPoint.y][nextPoint.x] = this.Types.Stone;
+      stones[point.y].push(point.x);
       return true;
     }
     return false;
   }
 
-  this.fallToAbyss = (data) => {
-    let size = this.getSize(data);
-    let field = this.initField(size.y, size.x);
-    this.fill(data, field);
+  this.fallToAbyss = (rocks) => {
+    let size = this.getSize(rocks);
+    let stones = new Array(size.y).fill('').map(a => []);
 
     let count = 0;
-    while(this.stoneFall(field)) {
+    while(this.stoneFall(rocks, stones, size)) {
+      count ++;
+    }
+    return count;
+  }
+
+  this.fillFull = (rocks) => {
+    let size = this.getSize(rocks);
+    size.y = size.y + 1;
+    let stones = new Array(size.y).fill('').map(a => []);
+
+    let count = 0;
+    while(!this.isStone(stones, this.Start)) {
+      this.stoneFall(rocks, stones, size, true);
       count ++;
     }
     return count;
   }
 
   // for testing
-  this.cutField = function (field, y, x, point) {
+  this.cutField = function (rocks, stones, y, x, point) {
     let subField = new Array(y).fill('').map((a) => new Array(x).fill(''));
     for(let i = 0; i < y; i ++) {
       for(let j = 0; j < x; j ++) {
-        subField[i][j] = (point) ? field[point.y + i][point.x + j] : field[i][j];
+        subField[i][j] = this.isStone(stones, { y: point.y + i, x: point.x + j}) ? this.Types.Stone : this.isSolid(rocks, { y: point.y + i, x: point.x + j});
       }
     }
     return subField;

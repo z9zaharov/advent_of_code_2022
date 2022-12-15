@@ -17,9 +17,9 @@ function step1(input) {
 function step2(input) {
   let data = parseInputData(input);
 
-  let hill = new Hill();
+  let regolith = new Regolith();
 
-  let res = hill.findBestRoute(data);
+  let res = regolith.fillFull(data);
 
   return res;
 }
@@ -27,4 +27,4 @@ function step2(input) {
 let input = getBlocks(/\r\n/);
 
 console.log(step1(input));
-//console.log(step2(input)); 
+console.log(step2(input)); 
