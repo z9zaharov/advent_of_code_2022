@@ -2,7 +2,7 @@ import { expect } from "@jest/globals";
 import { parseInputData, Regolith } from "../day14/day14.functions.js";
 import { split_blocks } from '../utils/utils';
 
-describe.only("--- Day 14: Regolith Reservoir ---", () => {
+describe("--- Day 14: Regolith Reservoir ---", () => {
 
   function get_input() {
     let input = `498,4 -> 498,6 -> 496,6
