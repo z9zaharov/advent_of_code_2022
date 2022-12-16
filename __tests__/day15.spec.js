@@ -2,7 +2,7 @@ import { expect } from "@jest/globals";
 import { parseInputData, Beacon } from "../day15/day15.functions.js";
 import { split_blocks } from '../utils/utils';
 
-describe.only("--- Day 15: Beacon Exclusion Zone ---", () => {
+describe("--- Day 15: Beacon Exclusion Zone ---", () => {
 
   function get_input() {
     let input = `Sensor at x=2, y=18: closest beacon is at x=-2, y=15
